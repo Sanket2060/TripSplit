@@ -1,0 +1,57 @@
+@startuml
+
+entity User {
+  id: String <<PK>>
+  name: String
+  email: String
+  image: String
+}
+
+entity Trip {
+  id: String <<PK>>
+  name: String
+  createdById: String <<FK>>
+}
+
+entity TripMember {
+  tripId: String <<FK>>
+  userId: String <<FK>>
+  -- PK: (tripId, userId)
+}
+
+entity Expense {
+  id: String <<PK>>
+  description: String
+  amount: Float
+  paidById: String <<FK>>
+  tripId: String <<FK>>
+  createdAt: DateTime
+}
+
+entity ExpenseApproval {
+  expenseId: String <<FK>>
+  userId: String <<FK>>
+  -- PK: (expenseId, userId)
+}
+
+entity Split {
+  expenseId: String <<FK>>
+  userId: String <<FK>>
+  shareAmount: Float
+  -- PK: (expenseId, userId)
+}
+
+User ||--o{ Trip : creates >
+Trip ||--o{ TripMember : has >
+User ||--o{ TripMember : joins >
+
+Trip ||--o{ Expense : contains >
+User ||--o{ Expense : pays >
+
+Expense ||--o{ ExpenseApproval : isApprovedBy >
+User ||--o{ ExpenseApproval : approves >
+
+Expense ||--o{ Split : hasSplit >
+User ||--o{ Split : owes >
+
+@enduml
