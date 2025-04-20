@@ -15,8 +15,69 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
+  id    Int     @id @default(uuid())
   email String  @unique
   name  String?
+  image String?
 }
 
+model Trip {
+  id           String       @id @default(uuid())
+  name         String
+  createdById  String  
+  createdBy    User         @relation("TripsCreatedByUser", fields: [createdById], references: [id])
+  members      TripMember[]
+  expenses     Expense[]
+}
+
+model TripMember {
+  tripId String
+  userId String
+
+  trip   Trip @relation(fields: [tripId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
+
+  @@id([tripId, userId]) // Composite Primary Key
+}
+
+model Expense {
+  id         String             @id @default(uuid())
+  description String
+  amount     Float
+  paidById   String
+  tripId     String
+  createdAt  DateTime          @default(now())
+
+  trip       Trip              @relation(fields: [tripId], references: [id])
+  paidBy     User              @relation("ExpensesPaidByUser", fields: [paidById], references: [id])
+  approvals  ExpenseApproval[]
+  splits     Split[]
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model ExpenseApproval {
+  expenseId String
+  userId    String
+  status    ApprovalStatus @default(PENDING)
+
+  expense   Expense @relation(fields: [expenseId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@id([expenseId, userId])
+}
+
+model Split {
+  expenseId   String
+  userId      String
+  shareAmount Float
+
+  expense     Expense @relation(fields: [expenseId], references: [id])
+  user        User    @relation(fields: [userId], references: [id])
+
+  @@id([expenseId, userId])
+}
