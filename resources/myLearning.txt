@@ -1,0 +1,1 @@
+Why is reloading happening at the 'create new trip' buttons?

@@ -22,7 +22,7 @@ const SignInBox = () => {
           <div className="mt-8">
             <button
               className="w-full py-3 px-4 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
-              onClick={() => signIn("google", { redirectTo: "/" })}
+              onClick={() => signIn("google", { redirectTo: "/dashboard" })}
             >
               <img
                 src="/api/placeholder/20/20"
